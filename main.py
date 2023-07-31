@@ -4,7 +4,9 @@ import math
 pygame.init()
 pos_x, pos_y = 200, 440
 enemy_x, enemy_y = 800, 440
-distance_threshold = 10
+heal_x, heal_y = 1200, 450
+
+distance_threshold = 100
 playerHP = 100
 enemyHP = 100
 attack_cooldown = 0  # Timer in milliseconds
@@ -47,14 +49,16 @@ def enemy():
         enemy_x -= 1
     elif enemy_x < pos_x:
         enemy_x += 1
+def heal_player():
+    global heal_x, heal_y
+    pygame.draw.rect(screen, (255, 255, 255), heal_rect)
 
 def attack_player():
     global playerHP, attack_cooldown
-
     dist = distance_between_points(pos_x, pos_y, enemy_x, enemy_y)
 
     if dist <= distance_threshold and attack_cooldown <= 0:
-        print("Attacking the enemy!")
+        print("Attacking the player!")
         playerHP -= 7
         attack_cooldown = 2000
 
@@ -65,8 +69,8 @@ def attack_enemy():
 
     if dist <= distance_threshold and attack_enemy_cooldown <= 0:
         # Check for mouse events
-        if keys[pygame.K_SPACE]:
-                print("Attacking the player!")
+        if keys[pygame.K_s]:
+                print("Attacking the enemy!")
                 enemyHP -= 10
                 attack_enemy_cooldown = 1500
 
@@ -80,6 +84,10 @@ def draw_enemy_hp():
 
 running = True
 while running:
+    #rects
+    moving_rect = pygame.Rect(pos_x, pos_y, 55, 50)
+    enemy_rect = pygame.Rect(enemy_x, enemy_y, 55, 50)
+    heal_rect = pygame.Rect(heal_x, heal_y, 35, 30)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -98,7 +106,14 @@ while running:
         enemy_x = 800
         enemy_y = 440
         playerHP = 100
-
+    if enemyHP <= 0:
+        enemy_x = 800
+        enemy_y = 440
+        enemyHP = 100
+        heal_x = 200
+    if moving_rect.colliderect(heal_rect):
+        playerHP += 30
+        heal_x = 1200
     attack_player()
     attack_enemy()
 
@@ -111,11 +126,10 @@ while running:
     enemyname = font.render('Prixie', False, (255, 255, 255))
     screen.blit(enemyname, (790, 390))
 
-    moving_rect = pygame.Rect(pos_x, pos_y, 55, 50)
-    enemy_rect = pygame.Rect(enemy_x, enemy_y, 55, 50)
 
     player()
     enemy()
+    heal_player()
 
     pygame.display.flip()
     clock.tick(60)
