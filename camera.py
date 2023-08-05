@@ -59,6 +59,7 @@ sword_image = pygame.transform.scale(sword_image, (60, 50))  # Adjust size as ne
 bg_image = pygame.image.load('data/images/bg.png').convert_alpha()
 bg_image = pygame.transform.scale(bg_image, (1920, 1080))
 
+camera_x, camera_y = 0, 0
 #distance
 def distance_between_points(x1, y1, x2, y2):
     return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
@@ -71,43 +72,49 @@ def draw_sword():
     # Draw the sword
     screen.blit(sword_image, (sword_x, sword_y))
 
+def update_camera_position():
+    global camera_x, camera_y
+    # Calculate the camera position based on the player's position
+    camera_x = pos_x - screen.get_width() // 2
+    camera_y = pos_y - screen.get_height() // 2
+
+    # Clamp the camera position to keep it within the game world boundaries
+    if camera_x < 0:
+        camera_x = 0
+    if camera_x > 1000 - screen.get_width():
+        camera_x = 1000 - screen.get_width()
+    if camera_y < 0:
+        camera_y = 0
+    if camera_y > 500 - screen.get_height():
+        camera_y = 500 - screen.get_height()
+
+
 # playerz
 def player():
-    global moving_rect, pos_x, pos_y
-    #pygame.draw.rect(screen, (51, 51, 255), moving_rect)
+    global pos_x, pos_y
+
+    # Update the player position relative to the camera
+    player_x = pos_x - camera_x
+    player_y = pos_y - camera_y
+
+    # Handle player movement
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
+    if keys[pygame.K_LEFT] or keys[pygame.K_a]:
         pos_x -= 10
-    if keys[pygame.K_RIGHT]:
+    if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
         pos_x += 10
-    if keys[pygame.K_UP]:
-        pos_y -= 10
-    if keys[pygame.K_DOWN]:
-        pos_y += 10
-    if keys[pygame.K_a]:
-        pos_x -= 10
-    if keys[pygame.K_d]:
-        pos_x += 10
-    if keys[pygame.K_w]:
-        pos_y -= 10
-    if keys[pygame.K_s]:
-        pos_y += 10
-    if pos_x < -15:
-        pos_x = -15
-    if pos_x > 1840:
-        pos_x = 1840
-    if pos_y < -15:
-        pos_y = -15
-    if pos_y > 1000:
-        pos_y = 1000
-        
+    if pos_x < 0:
+        pos_x = 0
+    if pos_x > 950:
+        pos_x = 950
+
+    # Draw the player relative to the camera
     current_image = player_stand
-    # Draw the player
-    screen.blit(current_image, (pos_x, pos_y))
+    screen.blit(current_image, (player_x, player_y))
     draw_sword()
 # enemy
 def enemy():
-    global enemy_x, enemy_y
+    global enemy_x, enemy_y, camera_x, camera_y
     #pygame.draw.rect(screen, (255, 51, 51), enemy_rect)
 
     # Move the enemy towards the player at a constant speed
@@ -118,7 +125,7 @@ def enemy():
 
     current_enemy_image = enemy_stand
     # Draw the player
-    screen.blit(current_enemy_image, (enemy_x, enemy_y))
+    screen.blit(current_enemy_image, (enemy_x - camera_x, enemy_y - camera_y))
 
 def heal_player():
     global heal_x, heal_y
@@ -176,6 +183,7 @@ running = True
 while running:
     screen.blit(bg_image, (0, 0))
     #rects
+    update_camera_position()
     moving_rect = pygame.Rect(pos_x, pos_y, 55, 50)
     enemy_rect = pygame.Rect(enemy_x, enemy_y, 55, 50)
     heal_rect = pygame.Rect(heal_x, heal_y, 35, 30)

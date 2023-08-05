@@ -59,17 +59,51 @@ sword_image = pygame.transform.scale(sword_image, (60, 50))  # Adjust size as ne
 bg_image = pygame.image.load('data/images/bg.png').convert_alpha()
 bg_image = pygame.transform.scale(bg_image, (1920, 1080))
 
+sword_swing_angle = 60
+
+# The speed of swinging (adjust this value to control the swinging speed)
+sword_swing_speed = 1
+
+# Position the sword relative to the player's position
+sword_offset_x = 61
+sword_offset_y = 30
+
+# The initial swing angle
+current_swing_angle = 0
+sword_swing_direction = 0
 #distance
 def distance_between_points(x1, y1, x2, y2):
     return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
 def draw_sword():
-    # Position the sword relative to the player's position
-    sword_x = pos_x + 61  # Adjust the x-coordinate as needed to position the sword correctly
-    sword_y = pos_y + 30  # Adjust the y-coordinate as needed to position the sword correctly
+    global current_swing_angle, sword_swing_speed, sword_swing_direction
+
+    # Calculate the new swing angle using the sine function
+    current_swing_angle += sword_swing_speed * sword_swing_direction
+
+    # Check for sword-enemy collision
+    sword_rect = sword_image.get_rect(topleft=(pos_x + sword_offset_x, pos_y + sword_offset_y))
+    enemy_rect = enemy_stand.get_rect(topleft=(enemy_x, enemy_y))
+    if sword_rect.colliderect(enemy_rect):
+        # If sword hits the enemy from the front, perform swinging animation forward
+        sword_swing_direction = 1
+    else:
+        # If sword does not hit the enemy, reset the swing angle and swing direction
+        current_swing_angle = 0
+        sword_swing_direction = 0
+
+    # Limit the swing angle to the range [-sword_swing_angle, sword_swing_angle]
+    current_swing_angle = max(-sword_swing_angle, min(current_swing_angle, sword_swing_angle))
+
+    # Calculate the rotation of the sword image based on the current swing angle
+    rotated_sword = pygame.transform.rotate(sword_image, current_swing_angle)
+
+    # Position the rotated sword relative to the player's position
+    sword_x = pos_x + sword_offset_x
+    sword_y = pos_y + sword_offset_y
 
     # Draw the sword
-    screen.blit(sword_image, (sword_x, sword_y))
+    screen.blit(rotated_sword, (sword_x, sword_y))
 
 # playerz
 def player():
