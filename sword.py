@@ -75,28 +75,26 @@ sword_swing_direction = 0
 def distance_between_points(x1, y1, x2, y2):
     return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
+sword_swing_angle = 60
+
+# The speed of swinging (adjust this value to control the swinging speed)
+sword_swing_speed = 0.1
+
+# Position the sword relative to the player's position
+sword_offset_x = 61
+sword_offset_y = 30
+
+# The initial swing angle
+current_swing_angle = 0
+
 def draw_sword():
-    global current_swing_angle, sword_swing_speed, sword_swing_direction
+    global current_swing_angle
 
     # Calculate the new swing angle using the sine function
-    current_swing_angle += sword_swing_speed * sword_swing_direction
-
-    # Check for sword-enemy collision
-    sword_rect = sword_image.get_rect(topleft=(pos_x + sword_offset_x, pos_y + sword_offset_y))
-    enemy_rect = enemy_stand.get_rect(topleft=(enemy_x, enemy_y))
-    if sword_rect.colliderect(enemy_rect):
-        # If sword hits the enemy from the front, perform swinging animation forward
-        sword_swing_direction = 1
-    else:
-        # If sword does not hit the enemy, reset the swing angle and swing direction
-        current_swing_angle = 0
-        sword_swing_direction = 0
-
-    # Limit the swing angle to the range [-sword_swing_angle, sword_swing_angle]
-    current_swing_angle = max(-sword_swing_angle, min(current_swing_angle, sword_swing_angle))
+    current_swing_angle = (current_swing_angle + sword_swing_speed) % 360
 
     # Calculate the rotation of the sword image based on the current swing angle
-    rotated_sword = pygame.transform.rotate(sword_image, current_swing_angle)
+    rotated_sword = pygame.transform.rotate(sword_image, current_swing_angle - sword_swing_angle)
 
     # Position the rotated sword relative to the player's position
     sword_x = pos_x + sword_offset_x

@@ -30,8 +30,8 @@ pos_x, pos_y = 200, 1000
 enemy_x, enemy_y = 800, 420
 heal_x, heal_y = 2000, 450
 round_heal_x, round_heal_y = 2200, 450
-box_x, box_y = 500, 400
-box2_x, box2_y = 900, 450
+box_x, box_y = 2200, 900
+box2_x, box2_y = 2200, 900
 
 distance_threshold = 100
 playerHP = 100
@@ -44,7 +44,7 @@ kills = 0
 screen = pygame.display.set_mode((1920, 1080))
 pygame.display.set_caption('Hello World')
 
-font = pygame.font.SysFont('Sans-Serif', 40)
+font = pygame.font.Font('data/fonts/anonymous.ttf', 40)
 
 clock = pygame.time.Clock()
 
@@ -128,7 +128,14 @@ def enemy():
 def boxrects():
     global box_x, box_y, box2_x, box2_y
     pygame.draw.rect(screen, (255, 255, 255), box1_rect)
-    pygame.draw.rect(screen, (0, 156, 73), box2_rect)
+    pygame.draw.rect(screen, (255, 255, 255), box2_rect)
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_e]:
+        box_x, box_y = 1700, 900
+        box2_x, box2_y = 1720, 900
+    elif keys[pygame.K_q]:
+        box_x, box_y = 2200, 900
+        box2_x, box2_y = 2200, 900
 def heal_player():
     global heal_x, heal_y
     pygame.draw.rect(screen, (255, 255, 255), heal_rect)
@@ -189,8 +196,8 @@ while running:
     enemy_rect = pygame.Rect(enemy_x, enemy_y, 55, 50)
     heal_rect = pygame.Rect(heal_x, heal_y, 35, 30)
     round_rect = pygame.Rect(round_heal_x, round_heal_y, 35, 30)
-    box1_rect = pygame.Rect(box_x, box_y, 100, 30)
-    box2_rect = pygame.Rect(box2_x, box2_y, 100, 30)
+    box1_rect = pygame.Rect(box_x, box_y, 30, 200)
+    box2_rect = pygame.Rect(box2_x, box2_y, 200, 30)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
