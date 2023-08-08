@@ -26,9 +26,7 @@ def show_splash_screen():
         pygame.time.Clock().tick(60)
 '''
 pygame.init()
-pygame.joystick.init()
-joystick = pygame.joystick.Joystick(0)  # Use the correct joystick index
-joystick.init()
+
 
 pos_x, pos_y = 200, 1000
 enemy_x, enemy_y = 800, 420
@@ -100,8 +98,8 @@ def name_enemy(enemy_x, enemy_y):
     name_y = enemy_y - enemyname.get_height()
     screen.blit(enemyname, (name_x, name_y))
 
-correct_x_axis_index = 0  # Replace with the correct X-axis index
-correct_y_axis_index = 1  
+correct_right_joystick_x_axis_index = 0  # Replace with the correct X-axis index
+correct_right_joystick_y_axis_index = 1  
 # playerz
 def player():
     global moving_rect, pos_x, pos_y, heal_cooldown, playerHP
@@ -123,12 +121,6 @@ def player():
         pos_y -= 10
     if keys[pygame.K_s]:
         pos_y += 10
-    for event in pygame.event.get():
-        if event.type == pygame.JOYAXISMOTION:
-            if event.axis == correct_x_axis_index:  # Replace with the correct X-axis index
-                pos_x -= int(event.value * 100)  # Adjust the multiplier as needed
-            elif event.axis == correct_y_axis_index:  # Replace with the correct Y-axis index
-                pos_y += int(event.value * 100)
     if pos_x < -15:
         pos_x = -15
     if pos_x > 1840:
@@ -146,22 +138,24 @@ def player():
 # enemy
 def enemy():
     global enemy_x, enemy_y
-    #pygame.draw.rect(screen, (255, 51, 51), enemy_rect)
 
     # Move the enemy towards the player at a constant speed
     if enemy_x > pos_x:
         enemy_x -= 1.5
     elif enemy_x < pos_x:
         enemy_x += 1.5
-    elif enemy_y >= pos_y:
+
+    if enemy_y > pos_y:  # Separate condition for moving down
         enemy_y -= 1.5
-    elif enemy_y <= pos_y:
+    elif enemy_y < pos_y:  # Separate condition for moving up
         enemy_y += 1.5
+    
     current_enemy_image = enemy_stand
     # Draw the enemy
     screen.blit(current_enemy_image, (enemy_x, enemy_y))
     draw_enemy_sword()  # Draw the sword for the enemy as well
     name_enemy(enemy_x, enemy_y)
+
 '''
 def enemy2():
     global enemy2_x, enemy2_y
@@ -213,6 +207,7 @@ def attack_enemy():
             #print('Attacking the enemy!')
             enemyHP -= 15
             attack_enemy_cooldown = 1500
+
 # drawings
 def draw_player_hp():
     player_hp_text = font.render(f'Numbis HP: {playerHP}', False, (255, 255, 255))
@@ -230,10 +225,13 @@ def draw_kills():
     kills_text = font.render(f'Kills / Coins: {kills}', False, (255, 255, 255))
     screen.blit(kills_text, (10, 100))
 #show_splash_screen()
-print(pygame.joystick.get_count())
+
 running = True
 while running:
-    screen.blit(bg_image, (0, 0))
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_ESCAPE]:
+        running = False 
+    #screen.blit(bg_image, (0, 0))
     #rects
     moving_rect = pygame.Rect(pos_x, pos_y, 55, 50)
     enemy_rect = pygame.Rect(enemy_x, enemy_y, 55, 50)
@@ -242,9 +240,6 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    for event in pygame.event.get():
-        if event.type == pygame.JOYAXISMOTION:
-            print("Axis:", event.axis, "Value:", event.value)
     
     # Updating attack cooldown
     if attack_cooldown > 0:
@@ -287,11 +282,6 @@ while running:
     draw_enemy_hp()
     draw_round_hp()
     draw_kills()
-    '''
-    
-    enemyname = font.render('Prixie', False, (255, 255, 255))
-    screen.blit(enemyname, (790, 390))
-    '''
 
     player()
     enemy()
