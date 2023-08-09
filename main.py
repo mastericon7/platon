@@ -1,13 +1,15 @@
 import pygame
 import math
-'''
+
+screen_width = 1920
+screen_height = 1080
 def show_splash_screen():
     splash_font = pygame.font.SysFont('Sans-Serif', 50)
     splash_text = splash_font.render('Welcome to Platon!', True, (255, 255, 255))
 
     # Initial position of the splash text
-    text_x = 350
-    text_y = 250
+    text_x = screen_width / 2 - 200
+    text_y = screen_height / 2 - 50
 
     start_time = pygame.time.get_ticks()  # Get the start time
 
@@ -15,7 +17,8 @@ def show_splash_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-    
+                return
+
         screen.fill((0, 0, 0))
         screen.blit(splash_text, (text_x, text_y))
         pygame.display.flip()
@@ -24,7 +27,48 @@ def show_splash_screen():
         text_y += math.sin(pygame.time.get_ticks() * 0.01) * 2  # Adjust the values for desired movement
 
         pygame.time.Clock().tick(60)
-'''
+
+    show_main_menu()
+
+def show_main_menu():
+    global running
+    menu_font = pygame.font.SysFont('Sans-Serif', 36)
+    menu_options = ['Play', 'Shop', 'Quit']
+    selected_option = 0
+    fruning = True
+    while fruning:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    selected_option = (selected_option - 1) % len(menu_options)
+                elif event.key == pygame.K_DOWN:
+                    selected_option = (selected_option + 1) % len(menu_options)
+                elif event.key == pygame.K_RETURN:
+                    if selected_option == 0:
+                        # Start the game
+                        fruning = False
+                    elif selected_option == 1:
+                        # Show options
+                        pass
+                    elif selected_option == 2:
+                        pygame.quit()
+                        
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_ESCAPE]:
+                pygame.quit()
+        screen.fill((0, 0, 0))
+
+        for i, option in enumerate(menu_options):
+            color = (255, 255, 255) if i == selected_option else (150, 150, 150)
+            text = menu_font.render(option, True, color)
+            text_rect = text.get_rect(center=(screen.get_width() // 2, 200 + i * 80))
+            screen.blit(text, text_rect)
+
+        pygame.display.flip()
+        pygame.time.Clock().tick(60)
 pygame.init()
 
 
@@ -45,7 +89,7 @@ roundHP = 0
 kills = 0
 heal_cooldown = 0  # Timer in milliseconds
 
-screen = pygame.display.set_mode((1920, 1080))
+screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Hello World')
 
 font = pygame.font.Font('data/fonts/anonymous.ttf', 40)
@@ -224,7 +268,7 @@ def draw_round_hp():
 def draw_kills():
     kills_text = font.render(f'Kills / Coins: {kills}', False, (255, 255, 255))
     screen.blit(kills_text, (10, 100))
-#show_splash_screen()
+show_splash_screen()
 
 running = True
 while running:
