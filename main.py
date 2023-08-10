@@ -97,7 +97,7 @@ font = pygame.font.Font('data/fonts/anonymous.ttf', 40)
 clock = pygame.time.Clock()
 
 # Load the images
-player_stand = pygame.image.load('data/images/player_stand.png').convert_alpha()
+player_stand = pygame.image.load('data/images/player.png').convert_alpha()
 player_stand = pygame.transform.scale(player_stand, (95, 90))
 
 enemy_stand = pygame.image.load('data/images/enemy_stand.png').convert_alpha()  
