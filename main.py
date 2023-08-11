@@ -3,6 +3,7 @@ import math
 
 screen_width = 1920
 screen_height = 1080
+'''
 def show_splash_screen():
     splash_font = pygame.font.SysFont('Sans-Serif', 50)
     splash_text = splash_font.render('Welcome to Platon!', True, (255, 255, 255))
@@ -69,6 +70,7 @@ def show_main_menu():
 
         pygame.display.flip()
         pygame.time.Clock().tick(60)
+'''
 pygame.init()
 
 
@@ -79,6 +81,7 @@ heal_x, heal_y= 2000, 450
 round_heal_x, round_heal_y = 2200, 450
 box_x, box_y = 2200, 900
 box2_x, box2_y = 2200, 900
+hay_x, hay_y = 1000, 500
 
 distance_threshold = 100
 playerHP = 100
@@ -102,9 +105,12 @@ player_stand = pygame.transform.scale(player_stand, (95, 90))
 
 enemy_stand = pygame.image.load('data/images/enemy_stand.png').convert_alpha()  
 enemy_stand = pygame.transform.scale(enemy_stand, (95, 90))
-
+#add-ons
 sword_image = pygame.image.load('data/images/knife.png').convert_alpha()  
 sword_image = pygame.transform.scale(sword_image, (60, 50))  # Adjust size as needed
+
+hay_image = pygame.image.load('data/images/hay.png').convert_alpha()
+hay_image = pygame.transform.scale(hay_image, (60, 50)) 
 
 bg_image = pygame.image.load('data/images/bg.png').convert_alpha()
 bg_image = pygame.transform.scale(bg_image, (1920, 1080))
@@ -113,6 +119,9 @@ bg_image = pygame.transform.scale(bg_image, (1920, 1080))
 def distance_between_points(x1, y1, x2, y2):
     return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
+def calculate_distance(point1, point2):
+    return pygame.math.Vector2(point2[0] - point1[0], point2[1] - point1[1]).length()
+
 def draw_sword():
     # Position the sword relative to the player's position
     sword_x = pos_x + 61  # Adjust the x-coordinate as needed to position the sword correctly
@@ -120,7 +129,8 @@ def draw_sword():
 
     # Draw the sword
     screen.blit(sword_image, (sword_x, sword_y))
-
+def draw_hay():
+    screen.blit(hay_image, (hay_x, hay_y))
 def draw_enemy_sword():
         # Position the sword relative to the player's position
     sword_x = enemy_x + 61  # Adjust the x-coordinate as needed to position the sword correctly
@@ -234,6 +244,13 @@ def attack_player():
         #print("Attacking the player!")
         playerHP -= 7
         attack_cooldown = 2000
+def draw_hp_text_above_hay(player_pos, hay_pos):
+    distance_to_hay = calculate_distance(player_pos, hay_pos)
+    if distance_to_hay < 100:
+        hp_text = font.render("HP: 100", True, (255, 255, 255))
+        text_x = hay_pos[0] - hp_text.get_width() // 2
+        text_y = hay_pos[1] - 50
+        screen.blit(hp_text, (text_x, text_y))
 # attacking the enemy
 def attack_enemy():
     global enemyHP, attack_enemy_cooldown
@@ -268,10 +285,11 @@ def draw_round_hp():
 def draw_kills():
     kills_text = font.render(f'Kills / Coins: {kills}', False, (255, 255, 255))
     screen.blit(kills_text, (10, 100))
-show_splash_screen()
+#show_splash_screen()
 
 running = True
 while running:
+    
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:
         running = False 
@@ -326,6 +344,9 @@ while running:
     draw_enemy_hp()
     draw_round_hp()
     draw_kills()
+    draw_hay()
+    
+    draw_hp_text_above_hay((pos_x, pos_y), (hay_x, hay_y))
 
     player()
     enemy()
