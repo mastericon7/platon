@@ -3,7 +3,7 @@ import math
 
 screen_width = 1920
 screen_height = 1080
-
+'''
 def show_splash_screen():
     splash_font = pygame.font.SysFont('Sans-Serif', 50)
     splash_text = splash_font.render('Welcome to Platon!', True, (255, 255, 255))
@@ -70,7 +70,7 @@ def show_main_menu():
 
         pygame.display.flip()
         pygame.time.Clock().tick(60)
-
+'''
 pygame.init()
 
 
@@ -82,6 +82,7 @@ round_heal_x, round_heal_y = 2200, 450
 box_x, box_y = 2200, 900
 box2_x, box2_y = 2200, 900
 hay_x, hay_y = 1000, 500
+inv_x, inv_y = 200, 200
 
 distance_threshold = 100
 playerHP = 100
@@ -93,6 +94,7 @@ roundHP = 0
 kills = 0
 heal_cooldown = 0  # Timer in milliseconds
 attack_hay_cooldown = 0 # Timer for enemy attack in milliseconds
+inventory = 0
 can_attack_hay = False  # Initialize the variable to False
 
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -117,6 +119,12 @@ hay_image = pygame.transform.scale(hay_image, (60, 50))
 
 bg_image = pygame.image.load('data/images/bg.png').convert_alpha()
 bg_image = pygame.transform.scale(bg_image, (1920, 1080))
+
+inv1_image = pygame.image.load('data/images/inv1.png').convert_alpha()
+inv1_image = pygame.transform.scale(inv1_image, (100, 100))
+
+heal_image = pygame.image.load('data/images/heal.png').convert_alpha()
+heal_image = pygame.transform.scale(heal_image, (35, 30)) 
 
 #distance
 def distance_between_points(x1, y1, x2, y2):
@@ -233,7 +241,8 @@ def enemy2():
 '''
 def heal_player():
     global heal_x, heal_y
-    pygame.draw.rect(screen, (255, 255, 255), heal_rect)
+    #pygame.draw.rect(screen, (255, 255, 255), heal_rect)
+    screen.blit(heal_image, (heal_x, heal_y))
 
 def round_heal():
     global round_heal_x, round_heal_y
@@ -290,6 +299,12 @@ def draw_hp_text_above_hay(player_pos, hay_pos):
         text_y = hay_pos[1] - 50
         screen.blit(hp_text, (text_x, text_y))
 
+def inventorys():
+    nubs = True
+    keys = pygame.key.get_pressed()
+    if nubs == True and keys[pygame.K_i]:
+        screen.blit(inv1_image, (inv_x, inv_y))
+
 # drawings
 def draw_player_hp():
     player_hp_text = font.render(f'Numbis HP: {playerHP}', False, (255, 255, 255))
@@ -306,11 +321,10 @@ def draw_round_hp():
 def draw_kills():
     kills_text = font.render(f'Kills / Coins: {kills}', False, (255, 255, 255))
     screen.blit(kills_text, (10, 100))
-show_splash_screen()
+#show_splash_screen()
 coins = 0
 running = True
 while running:
-    global can
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:
         running = False 
@@ -371,6 +385,7 @@ while running:
     draw_kills()
     draw_hay()
     draw_hp_text_above_hay((pos_x, pos_y), (hay_x, hay_y))
+    inventorys()
 
     player()
     enemy()
