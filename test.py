@@ -28,15 +28,16 @@ def show_splash_screen():
         text_y += math.sin(pygame.time.get_ticks() * 0.01) * 2  # Adjust the values for desired movement
 
         pygame.time.Clock().tick(60)
-
+        
     show_main_menu()
 
 def show_main_menu():
     global running
     menu_font = pygame.font.SysFont('Sans-Serif', 36)
-    menu_options = ['Play', 'Shop', 'Quit']
+    menu_options = ['Play', 'Shop', 'Black Cursor', 'White Cursor', 'Quit']
     selected_option = 0
     fruning = True
+    global cursor_setting
     while fruning:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -55,6 +56,10 @@ def show_main_menu():
                         # Show options
                         pass
                     elif selected_option == 2:
+                        cursor_setting = 1
+                    elif selected_option == 3:
+                        cursor_setting = 0
+                    elif selected_option == 4:
                         pygame.quit()
                         
             keys = pygame.key.get_pressed()
@@ -97,9 +102,12 @@ attack_hay_cooldown = 0 # Timer for enemy attack in milliseconds
 inventory = 0
 can_attack_hay = False  # Initialize the variable to Fals
 hay_cooldown = 0 # Timer for enemy attack in milliseconds
+cursor_setting = -1
 
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Hello World')
+
+pygame.mouse.set_visible(False)
 
 font = pygame.font.Font('data/fonts/anonymous.ttf', 40)
 
@@ -127,17 +135,12 @@ inv1_image = pygame.transform.scale(inv1_image, (100, 100))
 heal_image = pygame.image.load('data/images/heal.png').convert_alpha()
 heal_image = pygame.transform.scale(heal_image, (35, 30)) 
 
-#cursor_image = pygame.image.load('data/images/cursor.png').convert_alpha()
-'''
-pygame.mouse.set_cursor(
-    (cursor_image.get_width(), cursor_image.get_height()),
-    (0, 0),  # Hotspot (usually top-left corner)
-    cursor_image.get_bitsize(),
-    cursor_image.get_bytesize(),
-    cursor_image.get_data(),
-    cursor_image.get_mask()
-)
-'''
+cursor_image_black = pygame.image.load('data/images/cursor_black.png').convert_alpha()
+cursor_image_black = pygame.transform.scale(cursor_image_black, (40, 40))
+
+cursor_image_white = pygame.image.load('data/images/cursor_white.png').convert_alpha()
+cursor_image_white = pygame.transform.scale(cursor_image_white, (40, 40))
+
 #distance
 def distance_between_points(x1, y1, x2, y2):
     return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
@@ -408,7 +411,13 @@ while running:
     attack_enemy()
     attack_hay()
 
+    mouse_pos = pygame.mouse.get_pos()
+
     screen.fill((52, 52, 52))
+    if cursor_setting == 1:
+        screen.blit(cursor_image_black, mouse_pos)
+    else:
+        screen.blit(cursor_image_white, mouse_pos)
     draw_player_hp()
     draw_enemy_hp()
     draw_round_hp()

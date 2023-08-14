@@ -127,23 +127,14 @@ inv1_image = pygame.transform.scale(inv1_image, (100, 100))
 heal_image = pygame.image.load('data/images/heal.png').convert_alpha()
 heal_image = pygame.transform.scale(heal_image, (35, 30)) 
 
-#cursor_image = pygame.image.load('data/images/cursor.png').convert_alpha()
-'''
-pygame.mouse.set_cursor(
-    (cursor_image.get_width(), cursor_image.get_height()),
-    (0, 0),  # Hotspot (usually top-left corner)
-    cursor_image.get_bitsize(),
-    cursor_image.get_bytesize(),
-    cursor_image.get_data(),
-    cursor_image.get_mask()
-)
-'''
+
 #distance
 def distance_between_points(x1, y1, x2, y2):
     return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
 def calculate_distance(point1, point2):
     return pygame.math.Vector2(point2[0] - point1[0], point2[1] - point1[1]).length()
+    print('test')
 
 def draw_sword():
     # Position the sword relative to the player's position
