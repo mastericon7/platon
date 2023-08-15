@@ -34,7 +34,7 @@ def show_splash_screen():
 def show_main_menu():
     global running
     menu_font = pygame.font.SysFont('Sans-Serif', 36)
-    menu_options = ['Play', 'Shop', 'Black Cursor', 'White Cursor', 'Quit']
+    menu_options = ['Play', 'Shop', 'Cursors', 'Quit']
     selected_option = 0
     fruning = True
     global cursor_setting
@@ -56,10 +56,8 @@ def show_main_menu():
                         # Show options
                         pass
                     elif selected_option == 2:
-                        cursor_setting = 1
+                        cursors()
                     elif selected_option == 3:
-                        cursor_setting = 0
-                    elif selected_option == 4:
                         pygame.quit()
                         
 
@@ -78,7 +76,46 @@ def show_main_menu():
         pygame.time.Clock().tick(60)
 
 def cursors():
-    pass    
+    menu_font = pygame.font.SysFont('Sans-Serif', 36)
+    menu_options = ['Back', 'Black Cursor', 'White Cursor', 'Green Cursor']
+    selected_option = 0
+    fruning = True
+    global cursor_setting
+    while fruning:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    selected_option = (selected_option - 1) % len(menu_options)
+                elif event.key == pygame.K_DOWN:
+                    selected_option = (selected_option + 1) % len(menu_options)
+                elif event.key == pygame.K_RETURN:
+                    if selected_option == 0:
+                        # Start the game
+                        fruning = False
+                    elif selected_option == 1:
+                        cursor_setting = 1
+                    elif selected_option == 2:
+                        cursor_setting = 0
+                    elif selected_option == 3:
+                        cursor_setting = 2
+                        
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_c]:
+                pygame.quit()
+        screen.fill((0, 0, 0))
+
+        for i, option in enumerate(menu_options):
+            color = (255, 255, 255) if i == selected_option else (150, 150, 150)
+            text = menu_font.render(option, True, color)
+            text_rect = text.get_rect(center=(screen.get_width() // 2, 200 + i * 80))
+            screen.blit(text, text_rect)
+
+        pygame.display.flip()
+        pygame.time.Clock().tick(60)
 
 #'''
 pygame.init()
@@ -145,6 +182,9 @@ cursor_image_black = pygame.transform.scale(cursor_image_black, (40, 40))
 
 cursor_image_white = pygame.image.load('data/images/cursor_white.png').convert_alpha()
 cursor_image_white = pygame.transform.scale(cursor_image_white, (40, 40))
+
+cursor_image_green = pygame.image.load('data/images/cursor_green.png').convert_alpha()
+cursor_image_green = pygame.transform.scale(cursor_image_green, (40, 40))
 
 #distance
 def distance_between_points(x1, y1, x2, y2):
@@ -423,8 +463,11 @@ while running:
     screen.fill((52, 52, 52))
     if cursor_setting == 1:
         screen.blit(cursor_image_black, mouse_pos)
+    elif cursor_setting == 2:
+        screen.blit(cursor_image_green, mouse_pos)
     else:
         screen.blit(cursor_image_white, mouse_pos)
+    
     draw_player_hp()
     draw_enemy_hp()
     draw_round_hp()
