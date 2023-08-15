@@ -62,8 +62,9 @@ def show_main_menu():
                     elif selected_option == 4:
                         pygame.quit()
                         
+
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_ESCAPE]:
+            if keys[pygame.K_c]:
                 pygame.quit()
         screen.fill((0, 0, 0))
 
@@ -75,6 +76,10 @@ def show_main_menu():
 
         pygame.display.flip()
         pygame.time.Clock().tick(60)
+
+def cursors():
+    pass    
+
 #'''
 pygame.init()
 
@@ -342,8 +347,10 @@ coins = 0
 running = True
 while running:
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_ESCAPE]:
+    if keys[pygame.K_c]:
         running = False 
+    elif keys[pygame.K_ESCAPE]:
+        show_main_menu()
     #screen.blit(bg_image, (0, 0))
     #rects
     moving_rect = pygame.Rect(pos_x, pos_y, 55, 50)
