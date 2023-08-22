@@ -3,7 +3,7 @@ import math
 
 screen_width = 1920
 screen_height = 1080
-'''
+
 def show_splash_screen():
     splash_font = pygame.font.SysFont('Sans-Serif', 50)
     splash_text = splash_font.render('Welcome to Platon!', True, (255, 255, 255))
@@ -70,7 +70,7 @@ def show_main_menu():
 
         pygame.display.flip()
         pygame.time.Clock().tick(60)
-'''
+
 pygame.init()
 
 
