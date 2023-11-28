@@ -6,7 +6,7 @@ screen_height = 1080
 
 def show_splash_screen():
     splash_font = pygame.font.SysFont('Sans-Serif', 50)
-    splash_text = splash_font.render('Welcome to Platon!', True, (255, 255, 255))
+    splash_text = splash_font.render('Welcome to Noctrium!', True, (255, 255, 255))
 
     # Initial position of the splash text
     text_x = screen_width / 2 - 200
@@ -19,8 +19,7 @@ def show_splash_screen():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 return
-
-        screen.fill((0, 0, 0))
+        screen.fill((52, 52, 52))
         screen.blit(splash_text, (text_x, text_y))
         pygame.display.flip()
 
@@ -28,15 +27,16 @@ def show_splash_screen():
         text_y += math.sin(pygame.time.get_ticks() * 0.01) * 2  # Adjust the values for desired movement
 
         pygame.time.Clock().tick(60)
-
+        
     show_main_menu()
 
 def show_main_menu():
     global running
     menu_font = pygame.font.SysFont('Sans-Serif', 36)
-    menu_options = ['Play', 'Shop', 'Quit']
+    menu_options = ['Play', 'Cursors', 'Credits', 'Quit']
     selected_option = 0
     fruning = True
+    global cursor_setting
     while fruning:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -52,16 +52,63 @@ def show_main_menu():
                         # Start the game
                         fruning = False
                     elif selected_option == 1:
-                        # Show options
-                        pass
+                        cursors()
+                    elif selected_option == 2:
+                        credits()
                     elif selected_option == 2:
                         pygame.quit()
                         
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_ESCAPE]:
-                pygame.quit()
-        screen.fill((0, 0, 0))
 
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_c]:
+                pygame.quit()
+                return
+        #screen.fill((0, 0, 0))
+        screen.blit(bg2_image, (0,0))
+
+        for i, option in enumerate(menu_options):
+            color = (255, 255, 255) if i == selected_option else (150, 150, 150)
+            text = menu_font.render(option, True, color)
+            text_rect = text.get_rect(center=(screen.get_width() // 2, 200 + i * 80))
+            
+            screen.blit(text, text_rect)
+
+        pygame.display.flip()
+        pygame.time.Clock().tick(60)
+
+def cursors():
+    menu_font = pygame.font.SysFont('Sans-Serif', 36)
+    menu_options = ['Back', 'Black Cursor', 'White Cursor', 'Green Cursor']
+    selected_option = 0
+    fruning = True
+    global cursor_setting
+    while fruning:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    selected_option = (selected_option - 1) % len(menu_options)
+                elif event.key == pygame.K_DOWN:
+                    selected_option = (selected_option + 1) % len(menu_options)
+                elif event.key == pygame.K_RETURN:
+                    if selected_option == 0:
+                        # Start the game
+                        fruning = False
+                    elif selected_option == 1:
+                        cursor_setting = 1
+                    elif selected_option == 2:
+                        cursor_setting = 0
+                    elif selected_option == 3:
+                        cursor_setting = 2
+                        
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_c]:
+                pygame.quit()
+        #screen.fill((0, 0, 0))
+        screen.blit(bg2_image,(0,0))
         for i, option in enumerate(menu_options):
             color = (255, 255, 255) if i == selected_option else (150, 150, 150)
             text = menu_font.render(option, True, color)
@@ -70,9 +117,30 @@ def show_main_menu():
 
         pygame.display.flip()
         pygame.time.Clock().tick(60)
-
+def credits():
+    cruning = True
+    while cruning:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return                     
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_c]:
+            pygame.quit()
+        def credits_text():
+            credits_text1 = font.render(f'Developer: Massimo', False, (255, 255, 255))
+            screen.blit(credits_text1, (10, 100))
+            credits_text2 = font.render(f'Tester: NuttfieldTheMan', False, (255, 255, 255))
+            screen.blit(credits_text2, (10, 200))
+            credits_text3 = font.render(f'Music: Massimo', False, (255, 255, 255))
+            screen.blit(credits_text3, (10, 300))
+        
+        screen.blit(bg_image,(0,0))
+        credits_text()
+        pygame.display.flip()
+        pygame.time.Clock().tick(60)
+#start of main
 pygame.init()
-
 
 pos_x, pos_y = 200, 1000
 enemy_x, enemy_y = 800, 420
@@ -97,9 +165,12 @@ attack_hay_cooldown = 0 # Timer for enemy attack in milliseconds
 inventory = 0
 can_attack_hay = False  # Initialize the variable to Fals
 hay_cooldown = 0 # Timer for enemy attack in milliseconds
+cursor_setting = -1
 
 screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption('Hello World')
+pygame.display.set_caption('Noctrium - Fighter')
+
+pygame.mouse.set_visible(False)
 
 font = pygame.font.Font('data/fonts/anonymous.ttf', 40)
 
@@ -121,20 +192,32 @@ hay_image = pygame.transform.scale(hay_image, (60, 50))
 bg_image = pygame.image.load('data/images/bg.png').convert_alpha()
 bg_image = pygame.transform.scale(bg_image, (1920, 1080))
 
+bg2_image = pygame.image.load('data/images/bg2.png').convert_alpha()
+bg2_image = pygame.transform.scale(bg2_image, (1920, 1080))
+
 inv1_image = pygame.image.load('data/images/inv1.png').convert_alpha()
 inv1_image = pygame.transform.scale(inv1_image, (100, 100))
 
 heal_image = pygame.image.load('data/images/heal.png').convert_alpha()
 heal_image = pygame.transform.scale(heal_image, (35, 30)) 
 
+cursor_image_black = pygame.image.load('data/images/cursor_black.png').convert_alpha()
+cursor_image_black = pygame.transform.scale(cursor_image_black, (40, 40))
 
+cursor_image_white = pygame.image.load('data/images/cursor_white.png').convert_alpha()
+cursor_image_white = pygame.transform.scale(cursor_image_white, (40, 40))
+
+cursor_image_green = pygame.image.load('data/images/cursor_green.png').convert_alpha()
+cursor_image_green = pygame.transform.scale(cursor_image_green, (40, 40))
+
+pygameImg = pygame.image.load('data/images/pygame_powered.png').convert_alpha()
+pygameImg = pygame.transform.scale(pygameImg, (130,60))
 #distance
 def distance_between_points(x1, y1, x2, y2):
     return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
 def calculate_distance(point1, point2):
     return pygame.math.Vector2(point2[0] - point1[0], point2[1] - point1[1]).length()
-    print('test')
 
 def draw_sword():
     # Position the sword relative to the player's position
@@ -325,13 +408,20 @@ def draw_round_hp():
 def draw_kills():
     kills_text = font.render(f'Kills / Coins: {kills}', False, (255, 255, 255))
     screen.blit(kills_text, (10, 100))
-#show_splash_screen()
+#end of deffing
+#show_main_menu()
+show_splash_screen()
+
 coins = 0
 running = True
+
 while running:
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_ESCAPE]:
+    if keys[pygame.K_c]:
         running = False 
+    elif keys[pygame.K_ESCAPE]:
+        show_main_menu()
+
     #screen.blit(bg_image, (0, 0))
     #rects
     moving_rect = pygame.Rect(pos_x, pos_y, 55, 50)
@@ -399,7 +489,16 @@ while running:
     attack_enemy()
     attack_hay()
 
+    mouse_pos = pygame.mouse.get_pos()
+
     screen.fill((52, 52, 52))
+    if cursor_setting == 1:
+        screen.blit(cursor_image_black, mouse_pos)
+    elif cursor_setting == 2:
+        screen.blit(cursor_image_green, mouse_pos)
+    else:
+        screen.blit(cursor_image_white, mouse_pos)
+    
     draw_player_hp()
     draw_enemy_hp()
     draw_round_hp()
@@ -416,5 +515,5 @@ while running:
     #print(clock.get_fps())
     pygame.display.flip()
     clock.tick(60)
-#end
+
 pygame.quit()
