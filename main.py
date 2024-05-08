@@ -5,8 +5,8 @@ screen_width = 1920
 screen_height = 1080
 
 def show_splash_screen():
-    splash_font = pygame.font.SysFont('Sans-Serif', 50)
-    splash_text = splash_font.render('Welcome to Noctrium!', True, (255, 255, 255))
+    splash_font = pygame.font.SysFont('./data/fonts/anonymous.ttf', 50)
+    splash_text = splash_font.render('Welcome to Platon!', True, (255, 255, 255))
 
     # Initial position of the splash text
     text_x = screen_width / 2 - 200
@@ -32,7 +32,7 @@ def show_splash_screen():
 
 def show_main_menu():
     global running
-    menu_font = pygame.font.SysFont('Sans-Serif', 36)
+    menu_font = pygame.font.SysFont('./data/fonts/anonymous.ttf', 36)
     menu_options = ['Play', 'Cursors', 'Credits', 'Quit']
     selected_option = 0
     fruning = True
